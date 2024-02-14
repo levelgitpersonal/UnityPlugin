@@ -12,10 +12,23 @@ import AdServices
 public struct IADSDK {
 
     @available(iOS 14.3, *)
-    public func getAttributionToken() -> String {
+    public func getJsonString() -> String {
         do {
             let attributionToken = try AAAttribution.attributionToken()
-            return attributionToken
+            let data = attributionToken.data(using: .utf8)
+            
+            guard let data = data else {
+                return ""
+            }
+            
+            let byteArray = [UInt8](data)
+            let jsonString = String(data: try JSONSerialization.data(withJSONObject: byteArray), encoding: .utf8)
+            
+            guard let jsonString = jsonString else {
+                return ""
+            }
+            
+            return jsonString
         } catch {
             return ""
         }
